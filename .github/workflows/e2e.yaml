@@ -35,7 +35,7 @@ jobs:
           git tag -a $version -m "Test version $version"
           git push origin $version
 
-          echo "::set-output name=version::$version"
+          echo "version=$version" >> $GITHUB_OUTPUT
 
       - name: Test Run
         id: test_run
