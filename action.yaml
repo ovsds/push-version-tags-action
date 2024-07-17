@@ -1,0 +1,82 @@
+name: "Push Version Tags Action"
+description: "Push Version Tags Action"
+
+inputs:
+  version:
+    description: "Base version to be used for tags. Should be in format {major}.{minor}.{patch} or v{major}.{minor}.{patch} (e.g. 1.2.3 or v1.2.3)"
+    required: true
+
+  major:
+    description: "Weather to push major version tag"
+    required: true
+    default: "true"
+
+  minor:
+    description: "Weather to push minor version tag"
+    required: true
+    default: "true"
+
+outputs:
+  major_version:
+    description: "Major version tag"
+    value: ${{ steps.prepare-versions.outputs.major_version }}
+
+  minor_version:
+    description: "Minor version tag"
+    value: ${{ steps.prepare-versions.outputs.minor_version }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ inputs.version }}
+
+    - name: Validate version format
+      shell: bash
+      run: |
+        if [[ ! ${{ inputs.version }} =~ ^v?.+\..+\..+$ ]]; then
+          echo "Invalid version format. Should be in format {major}.{minor}.{patch} or v{major}.{minor}.{patch} (e.g. 1.2.3 or v1.2.3)"
+          exit 1
+        fi
+
+    - name: Prepare versions
+      id: prepare-versions
+      shell: bash
+      run: |
+        major=$(echo ${{ inputs.version }} | cut -d. -f1)
+        minor=$(echo ${{ inputs.version }} | cut -d. -f2)
+        patch=$(echo ${{ inputs.version }} | cut -d. -f3)
+
+        major_version="${major}"
+        echo "::set-output name=major_version::${major_version}"
+
+        minor_version="${major}.${minor}"
+        echo "::set-output name=minor_version::${minor_version}"
+
+    - name: Set up Git user
+      shell: bash
+      run: |
+        git config --global user.name ${{ github.actor }}
+        git config --global user.email ${{ github.actor }}@users.noreply.github.com
+
+    - name: Push Major Tag
+      shell: bash
+      if: ${{ inputs.major == 'true' }}
+      run: |
+        version="${{ steps.prepare-versions.outputs.major_version }}"
+        git tag -a $version -m "Major version $version"
+        git push origin $version --force
+
+    - name: Push Minor Tag
+      shell: bash
+      if: ${{ inputs.minor == 'true' }}
+      run: |
+        version="${{ steps.prepare-versions.outputs.minor_version }}"
+        git tag -a $version -m "Minor version $version"
+        git push origin $version --force
+
+branding:
+  icon: "tag"
+  color: "gray-dark"
