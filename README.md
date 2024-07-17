@@ -20,6 +20,9 @@ jobs:
   push-version-tags:
     runs-on: ubuntu-20.04
 
+    permissions:
+      contents: write
+
     steps:
       - name: Push Version Tags
         uses: ovsds/push-version-tags-action@v1
