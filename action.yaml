@@ -50,10 +50,10 @@ runs:
         patch=$(echo ${{ inputs.version }} | cut -d. -f3)
 
         major_version="${major}"
-        echo "::set-output name=major_version::${major_version}"
+        echo "major_version=${major_version}" >> $GITHUB_OUTPUT
 
         minor_version="${major}.${minor}"
-        echo "::set-output name=minor_version::${minor_version}"
+        echo "minor_version=${minor_version}" >> $GITHUB_OUTPUT
 
     - name: Set up Git user
       shell: bash
