@@ -17,46 +17,50 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.ref }}
-
-      - name: Set up Git user
-        shell: bash
-        run: |
-          git config --global user.name ${{ github.actor }}
-          git config --global user.email ${{ github.actor }}@users.noreply.github.com
 
       - name: Prepare test version
         id: prepare-test-version
         run: |
-          short_sha=$(git rev-parse --short ${{ github.event.pull_request.head.sha }})
+          short_sha=$(echo '${{ github.event.pull_request.head.sha }}' | cut -c1-7)
           version="$short_sha.minor.patch"
-
-          git tag -a $version -m "Test version $version"
-          git push origin $version
-
           echo "version=$version" >> $GITHUB_OUTPUT
 
+      - name: Create test tag
+        uses: ./.github/actions/create_reference
+        with:
+          ref: "tags/${{ steps.prepare-test-version.outputs.version }}"
+          sha: d9c6b9a24622ab2ce0c608c2207e5a80301a3d1a
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Test Run
-        id: test_run
+        id: test-run
         uses: ./
         with:
           version: ${{ steps.prepare-test-version.outputs.version }}
 
-      - name: Clean up version tag
-        if: success() || failure()
-        run: |
-          version="${{ steps.prepare-test-version.outputs.version }}"
-          git push origin --delete $version
+      - name: Test Run to validate overwriting
+        id: test-run2
+        uses: ./
+        with:
+          version: ${{ steps.prepare-test-version.outputs.version }}
 
-      - name: Clean up major tag
+      - name: Delete test tag
         if: success() || failure()
-        run: |
-          major_version=${{ steps.test_run.outputs.major_version }}
-          git push origin --delete $major_version
+        uses: ./.github/actions/delete_reference
+        with:
+          ref: "tags/${{ steps.prepare-test-version.outputs.version }}"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Clean up minor tag
+      - name: Delete major test tag
         if: success() || failure()
-        run: |
-          minor_version=${{ steps.test_run.outputs.minor_version }}
-          git push origin --delete $minor_version
+        uses: ./.github/actions/delete_reference
+        with:
+          ref: "tags/${{ steps.test-run.outputs.major_version }}"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Delete minor test tag
+        if: success() || failure()
+        uses: ./.github/actions/delete_reference
+        with:
+          ref: "tags/${{ steps.test-run.outputs.minor_version }}"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
