@@ -8,7 +8,7 @@ For example, if the base version is `v1.2.3`, it will create tags `v1` and `v1.2
 
 ## Usage
 
-### Example workflow
+### Example
 
 ```yaml
 name: Push version tags
