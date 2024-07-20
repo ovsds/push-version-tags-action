@@ -3,7 +3,8 @@
 [![CI](https://github.com/ovsds/push-version-tags-action/workflows/Check%20PR/badge.svg)](https://github.com/ovsds/push-version-tags-action/actions?query=workflow%3A%22%22Check+PR%22%22)
 [![GitHub Marketplace](https://img.shields.io/badge/Marketplace-Push%20Version%20Tags-blue.svg)](https://github.com/marketplace/actions/push-version-tags)
 
-Push Version Tags Action
+Pushes supplementary (major, minor) version tags to a repository. It is useful for creating tags for major and minor versions based on a base version.
+For example, if the base version is `v1.2.3`, it will create tags `v1` and `v1.2`.
 
 ## Usage
 
