@@ -1,5 +1,5 @@
-name: "Push Version Tags Action"
-description: "Push Version Tags Action"
+name: "Push Version Tags"
+description: "Pushes supplementary version tags to the repository"
 
 inputs:
   github_token:
