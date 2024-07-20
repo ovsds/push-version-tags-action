@@ -72,79 +72,23 @@ runs:
         github_token: ${{ steps.ensure-token.outputs.github_token }}
         tag_name: ${{ inputs.version }}
 
-    - name: Get major tag info
-      id: get-major-tag-info
+    - name: Create or update major tag
+      id: create-or-update-major-tag
       if: ${{ inputs.major == 'true' }}
-      uses: ovsds/get-tag-info-action@v1
+      uses: ovsds/create-or-update-ref-action@v1
       with:
         github_token: ${{ steps.ensure-token.outputs.github_token }}
-        tag_name: ${{ steps.prepare-versions.outputs.major_version }}
+        ref: "tags/${{ steps.prepare-versions.outputs.major_version }}"
+        sha: ${{ steps.get-tag-info.outputs.commit_sha }}
 
-    - name: Create major tag ref
-      if: ${{ inputs.major == 'true' && steps.get-major-tag-info.outputs.exists == 'false' }}
-      shell: bash
-      run: |
-        # Create major tag ref
-        gh api \
-          --method POST \
-          -H "Accept: application/vnd.github+json" \
-          -H "X-GitHub-Api-Version: 2022-11-28" \
-          /repos/${{ github.repository_owner }}/${{ github.event.repository.name }}/git/refs \
-          -F ref=refs/tags/${{ steps.prepare-versions.outputs.major_version }} \
-          -F sha=${{ steps.get-tag-info.outputs.commit_sha }}
-      env:
-        GH_TOKEN: ${{ steps.ensure-token.outputs.github_token }}
-
-    - name: Update major tag ref
-      if: ${{ inputs.major == 'true' && steps.get-major-tag-info.outputs.exists == 'true' }}
-      shell: bash
-      run: |
-        # Update major tag ref if exists
-        gh api \
-          --method PATCH \
-          -H "Accept: application/vnd.github+json" \
-          -H "X-GitHub-Api-Version: 2022-11-28" \
-          /repos/${{ github.repository_owner }}/${{ github.event.repository.name }}/git/refs/tags/${{ steps.prepare-versions.outputs.major_version }} \
-          -F sha=${{ steps.get-tag-info.outputs.commit_sha }}
-      env:
-        GH_TOKEN: ${{ steps.ensure-token.outputs.github_token }}
-
-    - name: Get minor tag info
-      id: get-minor-tag-info
+    - name: Create or update minor tag
+      id: create-or-update-minor-tag
       if: ${{ inputs.minor == 'true' }}
-      uses: ovsds/get-tag-info-action@v1
+      uses: ovsds/create-or-update-ref-action@v1
       with:
         github_token: ${{ steps.ensure-token.outputs.github_token }}
-        tag_name: ${{ steps.prepare-versions.outputs.minor_version }}
-
-    - name: Create minor tag ref
-      if: ${{ inputs.minor == 'true' && steps.get-minor-tag-info.outputs.exists == 'false' }}
-      shell: bash
-      run: |
-        # Create minor tag ref
-        gh api \
-          --method POST \
-          -H "Accept: application/vnd.github+json" \
-          -H "X-GitHub-Api-Version: 2022-11-28" \
-          /repos/${{ github.repository_owner }}/${{ github.event.repository.name }}/git/refs \
-          -F ref=refs/tags/${{ steps.prepare-versions.outputs.minor_version }} \
-          -F sha=${{ steps.get-tag-info.outputs.commit_sha }}
-      env:
-        GH_TOKEN: ${{ steps.ensure-token.outputs.github_token }}
-
-    - name: Update minor tag ref
-      if: ${{ inputs.minor == 'true' && steps.get-minor-tag-info.outputs.exists == 'true' }}
-      shell: bash
-      run: |
-        # Update minor tag ref if exists
-        gh api \
-          --method PATCH \
-          -H "Accept: application/vnd.github+json" \
-          -H "X-GitHub-Api-Version: 2022-11-28" \
-          /repos/${{ github.repository_owner }}/${{ github.event.repository.name }}/git/refs/tags/${{ steps.prepare-versions.outputs.minor_version }} \
-          -F sha=${{ steps.get-tag-info.outputs.commit_sha }}
-      env:
-        GH_TOKEN: ${{ steps.ensure-token.outputs.github_token }}
+        ref: "tags/${{ steps.prepare-versions.outputs.minor_version }}"
+        sha: ${{ steps.get-tag-info.outputs.commit_sha }}
 
 branding:
   icon: "tag"

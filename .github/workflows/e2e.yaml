@@ -26,11 +26,10 @@ jobs:
           echo "version=$version" >> $GITHUB_OUTPUT
 
       - name: Create test tag
-        uses: ./.github/actions/create_reference
+        uses: ovsds/create-or-update-ref-action@v1
         with:
           ref: "tags/${{ steps.prepare-test-version.outputs.version }}"
           sha: d9c6b9a24622ab2ce0c608c2207e5a80301a3d1a
-          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Test Run
         id: test-run
@@ -46,21 +45,21 @@ jobs:
 
       - name: Delete test tag
         if: success() || failure()
-        uses: ./.github/actions/delete_reference
+        uses: ./.github/actions/delete-ref-action
         with:
           ref: "tags/${{ steps.prepare-test-version.outputs.version }}"
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Delete major test tag
         if: success() || failure()
-        uses: ./.github/actions/delete_reference
+        uses: ./.github/actions/delete-ref-action
         with:
           ref: "tags/${{ steps.test-run.outputs.major_version }}"
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Delete minor test tag
         if: success() || failure()
-        uses: ./.github/actions/delete_reference
+        uses: ./.github/actions/delete-ref-action
         with:
           ref: "tags/${{ steps.test-run.outputs.minor_version }}"
           github_token: ${{ secrets.GITHUB_TOKEN }}
