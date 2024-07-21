@@ -33,12 +33,14 @@ jobs:
 
 ### Action Inputs
 
-| Name           | Description                                                                                                                      | Default             |
-| -------------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------------- |
-| `github_token` | Github token used for API calls. Required scope - 'contents: write'                                                              | ${{ github.token }} |
-| `version`      | Base version to be used for tags. Should be in format {major}.{minor}.{patch} or v{major}.{minor}.{patch} (e.g. 1.2.3 or v1.2.3) |                     |
-| `major`        | Weather to push major version tag.                                                                                               | true                |
-| `minor`        | Weather to push minor version tag.                                                                                               | true                |
+| Name           | Description                                                                                                                      | Default                             |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+| `github_token` | Github token used for API calls. Required scope - 'contents: write'                                                              | ${{ github.token }}                 |
+| `owner`        | Repository owner.                                                                                                                | ${{ github.repository_owner }}      |
+| `repo`         | Repository name.                                                                                                                 | ${{ github.event.repository.name }} |
+| `version`      | Base version to be used for tags. Should be in format {major}.{minor}.{patch} or v{major}.{minor}.{patch} (e.g. 1.2.3 or v1.2.3) |                                     |
+| `major`        | Weather to push major version tag.                                                                                               | true                                |
+| `minor`        | Weather to push minor version tag.                                                                                               | true                                |
 
 ### Action Outputs
 
