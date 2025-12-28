@@ -57,26 +57,30 @@ runs:
       shell: bash
       run: |
         # Validate version format
-        if [[ ! ${{ inputs.version }} =~ ^v?.+\..+\..+$ ]]; then
+        if [[ ! "${VERSION}" =~ ^v?.+\..+\..+$ ]]; then
           echo "Invalid version format."
           echo "Should be in format {major}.{minor}.{patch} or v{major}.{minor}.{patch} (e.g. 1.2.3 or v1.2.3)"
           exit 1
         fi
+      env:
+        VERSION: ${{ inputs.version }}
 
     - name: Prepare versions
       id: prepare-versions
       shell: bash
       run: |
         # Prepare versions
-        major=$(echo ${{ inputs.version }} | cut -d. -f1)
-        minor=$(echo ${{ inputs.version }} | cut -d. -f2)
-        patch=$(echo ${{ inputs.version }} | cut -d. -f3)
+        major=$(echo "${VERSION}" | cut -d. -f1)
+        minor=$(echo "${VERSION}" | cut -d. -f2)
+        patch=$(echo "${VERSION}" | cut -d. -f3)
 
         major_version="${major}"
         echo "major_version=${major_version}" >> $GITHUB_OUTPUT
 
         minor_version="${major}.${minor}"
         echo "minor_version=${minor_version}" >> $GITHUB_OUTPUT
+      env:
+        VERSION: ${{ inputs.version }}
 
     - name: Get tag info
       id: get-tag-info
