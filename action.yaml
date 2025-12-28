@@ -1,38 +1,53 @@
-name: "Push Version Tags"
-description: "Pushes supplementary version tags to the repository"
+name: |
+  Push Version Tags
+description: |
+  Pushes supplementary (major, minor) version tags to a repository. It is useful for creating tags for major and minor versions based on a base version.
+  For example, if the base version is `v1.2.3`, it will create tags `v1` and `v1.2`.
+
+branding:
+  icon: "tag"
+  color: "gray-dark"
 
 inputs:
   github_token:
-    description: "Github token used for API calls. Required scope - 'contents: write'"
+    description: |
+      Github token used for API calls. Required scope - 'contents: write'
     default: ${{ github.token }}
 
   owner:
-    description: "Owner of the repository"
+    description: |
+      Owner of the repository
     default: ${{ github.repository_owner }}
 
   repo:
-    description: "Repository name"
+    description: |
+      Repository name
     default: ${{ github.event.repository.name }}
 
   version:
-    description: "Base version to be used for tags. Should be in format {major}.{minor}.{patch} or v{major}.{minor}.{patch} (e.g. 1.2.3 or v1.2.3)"
+    description: |
+      Base version to be used for tags. Should be in format {major}.{minor}.{patch} or v{major}.{minor}.{patch} (e.g. 1.2.3 or v1.2.3)
     required: true
 
   major:
-    description: "Weather to push major version tag"
+    description: |
+      Weather to push major version tag
     default: "true"
 
   minor:
-    description: "Weather to push minor version tag"
+    description: |
+      Weather to push minor version tag
     default: "true"
 
 outputs:
   major_version:
-    description: "Major version tag"
+    description: |
+      Major version tag
     value: ${{ steps.prepare-versions.outputs.major_version }}
 
   minor_version:
-    description: "Minor version tag"
+    description: |
+      Minor version tag
     value: ${{ steps.prepare-versions.outputs.minor_version }}
 
 runs:
@@ -93,7 +108,3 @@ runs:
         repo: ${{ inputs.repo }}
         ref: "tags/${{ steps.prepare-versions.outputs.minor_version }}"
         sha: ${{ steps.get-tag-info.outputs.commit_sha }}
-
-branding:
-  icon: "tag"
-  color: "gray-dark"
