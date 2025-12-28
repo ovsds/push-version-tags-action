@@ -1,8 +1,7 @@
 name: |
   Push Version Tags
 description: |
-  Pushes supplementary (major, minor) version tags to a repository. It is useful for creating tags for major and minor versions based on a base version.
-  For example, if the base version is `v1.2.3`, it will create tags `v1` and `v1.2`.
+  Pushes supplementary (major, minor) version tags to a repository (for version `v1.2.3`, tags `v1` and `v1.2` will be created)
 
 branding:
   icon: "tag"
@@ -111,4 +110,14 @@ runs:
         owner: ${{ inputs.owner }}
         repo: ${{ inputs.repo }}
         ref: "tags/${{ steps.prepare-versions.outputs.minor_version }}"
+        sha: ${{ steps.get-tag-info.outputs.commit_sha }}
+
+    - name: Push version tag, so it stays last
+      id: push-version-tag
+      uses: ovsds/create-or-update-ref-action@v1
+      with:
+        github_token: ${{ inputs.github_token }}
+        owner: ${{ inputs.owner }}
+        repo: ${{ inputs.repo }}
+        ref: "tags/${{ inputs.version }}"
         sha: ${{ steps.get-tag-info.outputs.commit_sha }}
