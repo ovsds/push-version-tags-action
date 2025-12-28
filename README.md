@@ -19,13 +19,12 @@ on:
 
 jobs:
   push-version-tags:
-    runs-on: ubuntu-20.04
-
     permissions:
       contents: write
 
     steps:
       - name: Push Version Tags
+        id: push-version-tags
         uses: ovsds/push-version-tags-action@v1
         with:
           version: ${{ github.event.release.tag_name }}
@@ -33,28 +32,60 @@ jobs:
 
 ### Action Inputs
 
-| Name           | Description                                                                                                                      | Default                             |
-| -------------- | -------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
-| `github_token` | Github token used for API calls. Required scope - 'contents: write'                                                              | ${{ github.token }}                 |
-| `owner`        | Repository owner.                                                                                                                | ${{ github.repository_owner }}      |
-| `repo`         | Repository name.                                                                                                                 | ${{ github.event.repository.name }} |
-| `version`      | Base version to be used for tags. Should be in format {major}.{minor}.{patch} or v{major}.{minor}.{patch} (e.g. 1.2.3 or v1.2.3) |                                     |
-| `major`        | Weather to push major version tag.                                                                                               | true                                |
-| `minor`        | Weather to push minor version tag.                                                                                               | true                                |
+```yaml
+inputs:
+  github_token:
+    description: |
+      Github token used for API calls. Required scope - 'contents: write'
+    default: ${{ github.token }}
+
+  owner:
+    description: |
+      Owner of the repository
+    default: ${{ github.repository_owner }}
+
+  repo:
+    description: |
+      Repository name
+    default: ${{ github.event.repository.name }}
+
+  version:
+    description: |
+      Base version to be used for tags. Should be in format {major}.{minor}.{patch} or v{major}.{minor}.{patch} (e.g. 1.2.3 or v1.2.3)
+    required: true
+
+  major:
+    description: |
+      Weather to push major version tag
+    default: "true"
+
+  minor:
+    description: |
+      Weather to push minor version tag
+    default: "true"
+```
 
 ### Action Outputs
 
-| Name            | Description        |
-| --------------- | ------------------ |
-| `major_version` | Major version tag. |
-| `minor_version` | Minor version tag. |
+```yaml
+outputs:
+  major_version:
+    description: |
+      Major version tag
+    value: ${{ steps.prepare-versions.outputs.major_version }}
+
+  minor_version:
+    description: |
+      Minor version tag
+    value: ${{ steps.prepare-versions.outputs.minor_version }}
+```
 
 ## Development
 
 ### Global dependencies
 
-- nvm
-- node
+- [Taskfile](https://taskfile.dev/installation/)
+- [nvm](https://github.com/nvm-sh/nvm?tab=readme-ov-file#install--update-script)
 
 ### Taskfile commands
 
