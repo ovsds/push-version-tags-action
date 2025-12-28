@@ -21,13 +21,17 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Prepare test version
         id: prepare-test-version
         run: |
-          short_sha=$(echo '${{ github.event.pull_request.head.sha }}' | cut -c1-7)
+          short_sha=$(echo "${SHA}" | cut -c1-7)
           version="$short_sha.minor.patch"
           echo "version=$version" >> $GITHUB_OUTPUT
+        env:
+          SHA: ${{ github.event.pull_request.head.sha }}
 
       - name: Create test tag
         uses: ovsds/create-or-update-ref-action@v1
