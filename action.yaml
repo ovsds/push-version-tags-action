@@ -121,3 +121,4 @@ runs:
         repo: ${{ inputs.repo }}
         ref: "tags/${{ inputs.version }}"
         sha: ${{ steps.get-tag-info.outputs.commit_sha }}
+        force: "true"
