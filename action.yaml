@@ -1,7 +1,7 @@
 name: |
   Push Version Tags
 description: |
-  Pushes supplementary (major, minor) version tags to a repository (for version `v1.2.3`, tags `v1` and `v1.2` will be created)
+  Pushes supplementary (major, minor) version tags to a repository (for `v1.2.3`, tags `v1` and `v1.2` will be created)
 
 branding:
   icon: "tag"
