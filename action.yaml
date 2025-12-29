@@ -111,14 +111,3 @@ runs:
         repo: ${{ inputs.repo }}
         ref: "tags/${{ steps.prepare-versions.outputs.minor_version }}"
         sha: ${{ steps.get-tag-info.outputs.commit_sha }}
-
-    - name: Push version tag, so it stays last
-      id: push-version-tag
-      uses: ovsds/create-or-update-ref-action@v1
-      with:
-        github_token: ${{ inputs.github_token }}
-        owner: ${{ inputs.owner }}
-        repo: ${{ inputs.repo }}
-        ref: "tags/${{ inputs.version }}"
-        sha: ${{ steps.get-tag-info.outputs.commit_sha }}
-        force: "true"
