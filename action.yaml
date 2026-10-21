@@ -83,7 +83,7 @@ runs:
 
     - name: Get tag info
       id: get-tag-info
-      uses: ovsds/get-tag-info-action@v1
+      uses: ovsds/get-tag-info-action@8e237d14e6d2aa3f7e66e0ab3c854d394144bf1c # v1.0.3
       with:
         github_token: ${{ inputs.github_token }}
         owner: ${{ inputs.owner }}
@@ -93,7 +93,7 @@ runs:
     - name: Create or update major tag
       id: create-or-update-major-tag
       if: ${{ inputs.major == 'true' }}
-      uses: ovsds/create-or-update-ref-action@v1
+      uses: ovsds/create-or-update-ref-action@1157b2991820188d5a8e6f22656775d1d171f762 # v1.1.0
       with:
         github_token: ${{ inputs.github_token }}
         owner: ${{ inputs.owner }}
@@ -104,7 +104,7 @@ runs:
     - name: Create or update minor tag
       id: create-or-update-minor-tag
       if: ${{ inputs.minor == 'true' }}
-      uses: ovsds/create-or-update-ref-action@v1
+      uses: ovsds/create-or-update-ref-action@1157b2991820188d5a8e6f22656775d1d171f762 # v1.1.0
       with:
         github_token: ${{ inputs.github_token }}
         owner: ${{ inputs.owner }}
