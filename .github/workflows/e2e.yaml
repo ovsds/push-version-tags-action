@@ -20,7 +20,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
 
@@ -41,33 +41,33 @@ jobs:
 
       - name: Test Run
         id: test-run
-        uses: ./
+        uses: $/
         with:
           version: ${{ steps.prepare-test-version.outputs.version }}
 
       - name: Test Run to validate overwriting
         id: test-run2
-        uses: ./
+        uses: $/
         with:
           version: ${{ steps.prepare-test-version.outputs.version }}
 
       - name: Delete test tag
         if: success() || failure()
-        uses: ./.github/actions/delete-ref-action
+        uses: $/.github/actions/delete-ref-action
         with:
           ref: "tags/${{ steps.prepare-test-version.outputs.version }}"
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Delete major test tag
         if: success() || failure()
-        uses: ./.github/actions/delete-ref-action
+        uses: $/.github/actions/delete-ref-action
         with:
           ref: "tags/${{ steps.test-run.outputs.major_version }}"
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Delete minor test tag
         if: success() || failure()
-        uses: ./.github/actions/delete-ref-action
+        uses: $/.github/actions/delete-ref-action
         with:
           ref: "tags/${{ steps.test-run.outputs.minor_version }}"
           github_token: ${{ secrets.GITHUB_TOKEN }}
@@ -76,12 +76,14 @@ jobs:
     runs-on: ubuntu-latest
     if: always() && !cancelled()
 
+    permissions: {}
+
     needs:
       - e2e-default
 
     steps:
       - name: Collect Results
-        uses: ovsds/collect-needs-result-action@v1
+        uses: ovsds/collect-needs-result-action@12190e2a1bfe85d9c024f190a3833973e97998f8 # v1.0.0
         with:
           needs_json: ${{ toJson(needs) }}
           skip_allowed: false
